@@ -6,7 +6,7 @@
 #    By: ylachhab <ylachhab@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/04/14 11:27:24 by ylachhab          #+#    #+#              #
-#    Updated: 2023/04/15 15:31:47 by ylachhab         ###   ########.fr        #
+#    Updated: 2023/05/02 16:27:36 by ylachhab         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,14 +23,13 @@ SRC =	philo.c \
 
 OBJS = $(SRC:.c=.o)
 
-all:  $(NAME)
-
+all: $(NAME)
 
 philo/%.o : philo/%.c philo/philo.h
 	$(CC) $(FLAGS) -c $< -o $@
 
 $(NAME) : $(OBJS)
-	$(CC) $(FLAGS) $(OBJS) -o $(NAME)
+	$(CC) $(FLAGS) $(OBJS)  -o $(NAME)
 
 clean:
 	$(RM) $(OBJS)

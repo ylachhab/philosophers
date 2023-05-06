@@ -6,11 +6,40 @@
 /*   By: ylachhab <ylachhab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/15 13:55:50 by ylachhab          #+#    #+#             */
-/*   Updated: 2023/04/15 16:59:59 by ylachhab         ###   ########.fr       */
+/*   Updated: 2023/05/06 10:09:16 by ylachhab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+t_philo	*ft_listnew(t_arg *info)
+{
+	t_philo	*new;
+
+	new = malloc(sizeof(t_philo));
+	if (!new)
+		return (NULL);
+	new->info = info;
+	new->next = NULL;
+	return (new);
+}
+
+void	ft_listadd_back(t_philo **lst, t_philo *new)
+{
+	t_philo	*ptr;
+
+	if (!lst)
+		return ;
+	ptr = *lst;
+	if (!*lst)
+		*lst = new;
+	else
+	{
+		while (ptr->next != NULL)
+			ptr = ptr->next;
+		ptr->next = new;
+	}
+}
 
 void	ft_error(char *str)
 {
