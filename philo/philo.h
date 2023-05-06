@@ -6,7 +6,7 @@
 /*   By: ylachhab <ylachhab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/14 12:21:16 by ylachhab          #+#    #+#             */
-/*   Updated: 2023/05/06 10:09:42 by ylachhab         ###   ########.fr       */
+/*   Updated: 2023/05/06 14:36:42 by ylachhab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,5 +47,8 @@ t_philo	*ft_listnew(t_arg *info);
 void	ft_listadd_back(t_philo **lst, t_philo *new);
 long	ft_time(void);
 void	ft_usleep(long time);
+void	ft_create_thread(t_philo *philo, t_arg *info);
+void	ft_create_node(t_philo **philo, t_arg *info);
+int		ft_died(t_philo *philo, t_arg *info);
 
 #endif
