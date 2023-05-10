@@ -6,7 +6,7 @@
 /*   By: ylachhab <ylachhab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/06 14:34:42 by ylachhab          #+#    #+#             */
-/*   Updated: 2023/05/06 14:44:14 by ylachhab         ###   ########.fr       */
+/*   Updated: 2023/05/09 20:01:42 by ylachhab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,13 +19,16 @@ int	ft_last_eat(t_philo *philo, t_arg *info)
 
 	j = 0;
 	i = 0;
-	while (i++ < info->nbr_philo)
+	while (i < info->nbr_philo)
 	{
+		pthread_mutex_lock(&philo->last);
 		if (philo->last_eat == -1)
 			j++;
+		pthread_mutex_unlock(&philo->last);
 		philo = philo->next;
+		i++;
 	}
-	if (j == info->must_eat)
+	if (j == info->nbr_philo)
 		return (1);
 	return (0);
 }
@@ -38,6 +41,7 @@ int	ft_died(t_philo *philo, t_arg *info)
 		if (philo->last_eat != -1
 			&& ((ft_time() - info->ftime) - philo->last_eat) >= info->time_die)
 		{
+			pthread_mutex_lock(philo->print);
 			printf("%ld\t%d\t%s\t\n", (ft_time() - philo->info->ftime),
 				philo->i, "died");
 			return (1);
@@ -62,6 +66,9 @@ void	ft_create_node(t_philo **philo, t_arg *info)
 		new = ft_listnew(info);
 		new->i = i;
 		new->last_eat = 0;
+		new->print = info->print;
+		pthread_mutex_init(&new->fork, NULL);
+		pthread_mutex_init(&new->last, NULL);
 		ft_listadd_back(philo, new);
 		i++;
 	}
@@ -78,11 +85,11 @@ long	ft_time(void)
 	return (ret);
 }
 
-void	ft_usleep(long time)
+void	ft_usleep(long time, long current)
 {
 	long	first_time;
 
 	first_time = ft_time();
-	while ((first_time + time) > ft_time())
+	while (ft_time() - current < time)
 		usleep(100);
 }

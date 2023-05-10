@@ -6,14 +6,13 @@
 #    By: ylachhab <ylachhab@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/04/14 11:27:24 by ylachhab          #+#    #+#              #
-#    Updated: 2023/05/06 14:35:41 by ylachhab         ###   ########.fr        #
+#    Updated: 2023/05/09 15:17:33 by ylachhab         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = philo
 
-FLAGS  = -Wall -Wextra -Werror
-
+FLAGS  = -Wall -Wextra -Werror #-fsanitize=thread
 CC = cc
 
 RM = rm -f

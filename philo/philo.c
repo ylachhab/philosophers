@@ -6,39 +6,44 @@
 /*   By: ylachhab <ylachhab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/14 12:26:31 by ylachhab          #+#    #+#             */
-/*   Updated: 2023/05/06 14:54:52 by ylachhab         ###   ########.fr       */
+/*   Updated: 2023/05/09 20:03:00 by ylachhab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
+void	ft_mutex_printf(t_philo *philo, char *msg)
+{
+	pthread_mutex_lock(philo->print);
+	printf("%ld\t%d\t%s\n", (ft_time() - philo->info->ftime),
+		philo->i, msg);
+	pthread_mutex_unlock(philo->print);
+}
+
 void	ft_action(t_philo *philo)
 {
+	long current;
 	pthread_mutex_lock(&philo->fork);
-	pthread_mutex_lock(&philo->info->print);
-	printf("%ld\t%d\t%s\n", (ft_time() - philo->info->ftime),
-		philo->i, "has tacken a fork");
-	pthread_mutex_unlock(&philo->info->print);
+
+	ft_mutex_printf(philo, "has tacken a fork");
+
 	pthread_mutex_lock(&philo->next->fork);
-	pthread_mutex_lock(&philo->info->print);
-	printf("%ld\t%d\t%s\n", (ft_time() - philo->info->ftime),
-		philo->i, "has tacken a fork");
-	pthread_mutex_unlock(&philo->info->print);
-	pthread_mutex_lock(&philo->info->print);
-	printf("%ld\t%d\t%s\n", (ft_time() - philo->info->ftime),
-		philo->i, "is eating");
+
+	ft_mutex_printf(philo, "has tacken a fork");
+
+	ft_mutex_printf(philo, "is eating");
 	pthread_mutex_lock(&philo->last);
 	philo->last_eat = ft_time() - philo->info->ftime;
 	pthread_mutex_unlock(&philo->last);
-	pthread_mutex_unlock(&philo->info->print);
-	ft_usleep(philo->info->time_eat);
+	current = ft_time();
+	ft_usleep(philo->info->time_eat, current);
+
 	pthread_mutex_unlock(&philo->fork);
 	pthread_mutex_unlock(&philo->next->fork);
-	pthread_mutex_lock(&philo->info->print);
-	printf("%ld\t%d\t%s\n", (ft_time() - philo->info->ftime),
-		philo->i, "is sleeping");
-	pthread_mutex_unlock(&philo->info->print);
-	ft_usleep(philo->info->time_sleep);
+
+	ft_mutex_printf(philo, "is sleeping");
+	current = ft_time();
+	ft_usleep(philo->info->time_sleep, current);
 }
 
 void	*ft_routine(void *arg)
@@ -52,17 +57,16 @@ void	*ft_routine(void *arg)
 	while (1)
 	{
 		if (philo->i % 2)
-			ft_usleep(1);
+			usleep(500);
 		ft_action(philo);
-		pthread_mutex_lock(&philo->info->print);
-		printf("%ld\t%d\t%s\n", (ft_time() - philo->info->ftime),
-			philo->i, "is tinking");
-		pthread_mutex_unlock(&philo->info->print);
+		ft_mutex_printf(philo, "is thinking");
 		if (philo->info->must_eat > 0)
 			nbr_of_eat++;
 		if (philo->info->must_eat == nbr_of_eat)
 		{
+			pthread_mutex_lock(&philo->last);
 			philo->last_eat = -1;
+			pthread_mutex_unlock(&philo->last);
 			break ;
 		}
 	}
@@ -74,16 +78,13 @@ void	ft_create_thread(t_philo *philo, t_arg *info)
 	int		i;
 
 	i = 0;
-	pthread_mutex_init(&info->print, NULL);
 	info->ftime = 0;
-	i = 0;
 	while (i < info->nbr_philo)
 	{
 		if (!info->ftime)
 			info->ftime = ft_time();
-		pthread_mutex_init(&philo->fork, NULL);
-		pthread_mutex_init(&philo->last, NULL);
 		pthread_create(&philo->id, NULL, &ft_routine, philo);
+		pthread_detach(philo->id);
 		philo = philo->next;
 		i++;
 	}
@@ -108,12 +109,15 @@ int	main(int ac, char **av)
 		if (ac == 6)
 			info.must_eat = ft_atoi(av[5]);
 		philo = NULL;
+		info.print = malloc(sizeof(pthread_mutex_t));
+		pthread_mutex_init(info.print, NULL);
 		ft_create_node(&philo, &info);
 		ft_create_thread(philo, &info);
 		if (ft_died(philo, &info))
-			return (1);
+			return (0);
 	}
 	else
 		printf("Error in the argement\n");
 	return (0);
 }
+
