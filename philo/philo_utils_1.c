@@ -6,7 +6,7 @@
 /*   By: ylachhab <ylachhab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/06 14:34:42 by ylachhab          #+#    #+#             */
-/*   Updated: 2023/05/09 20:01:42 by ylachhab         ###   ########.fr       */
+/*   Updated: 2023/05/10 17:44:46 by ylachhab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@ int	ft_last_eat(t_philo *philo, t_arg *info)
 {
 	int		i;
 	int		j;
+	t_philo	*head;
 
 	j = 0;
 	i = 0;
@@ -29,23 +30,33 @@ int	ft_last_eat(t_philo *philo, t_arg *info)
 		i++;
 	}
 	if (j == info->nbr_philo)
+	{
+		ft_free(philo, info);
 		return (1);
+	}
 	return (0);
 }
 
 int	ft_died(t_philo *philo, t_arg *info)
 {
+	int	i;
+
+	i = -1;
 	while (1)
 	{
 		pthread_mutex_lock(&philo->last);
-		if (philo->last_eat != -1
-			&& ((ft_time() - info->ftime) - philo->last_eat) >= info->time_die)
+		pthread_mutex_lock(&info->died_m);
+		if ((philo->last_eat != -1
+				&& ((ft_time() - info->ftime) - philo->last_eat)
+				>= info->time_die) || info->died != -1)
 		{
+			i = philo->i * (info->died == -1) + info->died * (info->died != -1);
 			pthread_mutex_lock(philo->print);
 			printf("%ld\t%d\t%s\t\n", (ft_time() - philo->info->ftime),
-				philo->i, "died");
+				i, "died");
 			return (1);
 		}
+		pthread_mutex_unlock(&info->died_m);
 		pthread_mutex_unlock(&philo->last);
 		if (ft_last_eat(philo, info))
 			return (1);
@@ -85,11 +96,17 @@ long	ft_time(void)
 	return (ret);
 }
 
-void	ft_usleep(long time, long current)
+int	ft_usleep(long time, long current, t_philo *philo)
 {
 	long	first_time;
 
 	first_time = ft_time();
 	while (ft_time() - current < time)
+	{
+		if (((ft_time() - philo->info->ftime) - philo->last_eat)
+			>= philo->info->time_die)
+			return (1);
 		usleep(100);
+	}
+	return (0);
 }

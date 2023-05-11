@@ -6,7 +6,7 @@
 /*   By: ylachhab <ylachhab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/15 13:55:50 by ylachhab          #+#    #+#             */
-/*   Updated: 2023/05/06 14:24:58 by ylachhab         ###   ########.fr       */
+/*   Updated: 2023/05/10 18:52:51 by ylachhab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,12 +41,6 @@ void	ft_listadd_back(t_philo **lst, t_philo *new)
 	}
 }
 
-void	ft_error(char *str)
-{
-	printf("%s\n", str);
-	exit(1);
-}
-
 int	ft_atoi(const char *str)
 {
 	int		i;
@@ -68,8 +62,6 @@ int	ft_atoi(const char *str)
 	while (str[i] != '\0' && (str[i] >= '0' && str[i] <= '9'))
 	{
 		result = result * 10 + str[i] - 48;
-		if ((result > 2147483647 && sign == 1) || result > 2147483648)
-			ft_error("error\n");
 		i++;
 	}
 	return (result * sign);
