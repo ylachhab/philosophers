@@ -6,7 +6,7 @@
 /*   By: ylachhab <ylachhab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/14 12:21:16 by ylachhab          #+#    #+#             */
-/*   Updated: 2023/05/10 19:12:45 by ylachhab         ###   ########.fr       */
+/*   Updated: 2023/05/17 19:38:09 by ylachhab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,6 @@ typedef struct s_arg
 	int				time_sleep;
 	int				must_eat;
 	long			ftime;
-	int				died;
-	pthread_mutex_t	died_m;
 	pthread_mutex_t	*print;
 }	t_arg;
 

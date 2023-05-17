@@ -6,7 +6,7 @@
 /*   By: ylachhab <ylachhab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/10 17:43:31 by ylachhab          #+#    #+#             */
-/*   Updated: 2023/05/10 19:15:18 by ylachhab         ###   ########.fr       */
+/*   Updated: 2023/05/17 19:39:28 by ylachhab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,12 +69,6 @@ int	ft_empty_arg(char *s)
 	return (1);
 }
 
-void	ft_mutex_usleep(t_philo *philo)
-{
-	pthread_mutex_lock(&philo->info->died_m);
-	philo->info->died = philo->i;
-	pthread_mutex_unlock(&philo->info->died_m);
-}
 
 void	ft_free(t_philo *philo, t_arg *info)
 {
@@ -92,5 +86,4 @@ void	ft_free(t_philo *philo, t_arg *info)
 	}
 	pthread_mutex_destroy(info->print);
 	free(info->print);
-	pthread_mutex_destroy(&info->died_m);
 }

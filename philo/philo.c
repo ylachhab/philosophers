@@ -6,7 +6,7 @@
 /*   By: ylachhab <ylachhab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/14 12:26:31 by ylachhab          #+#    #+#             */
-/*   Updated: 2023/05/10 19:15:14 by ylachhab         ###   ########.fr       */
+/*   Updated: 2023/05/17 19:48:50 by ylachhab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,16 +34,13 @@ int	ft_action(t_philo *philo)
 	pthread_mutex_unlock(&philo->last);
 	current = ft_time();
 	if (ft_usleep(philo->info->time_eat, current, philo))
-	{
-		ft_mutex_usleep(philo);
 		return (1);
-	}
 	pthread_mutex_unlock(&philo->fork);
 	pthread_mutex_unlock(&philo->next->fork);
 	ft_mutex_printf(philo, "is sleeping");
 	current = ft_time();
 	if (ft_usleep(philo->info->time_sleep, current, philo))
-		return (ft_mutex_usleep(philo), 1);
+		return (1);
 	return (0);
 }
 
@@ -53,9 +50,8 @@ void	*ft_routine(void *arg)
 	int		nbr_of_eat;
 
 	philo = (t_philo *)arg;
-	philo->last_eat = 0;
+	// philo->last_eat = 0;
 	nbr_of_eat = 0;
-	philo->info->died = -1;
 	while (1)
 	{
 		if (philo->i % 2)
@@ -112,7 +108,6 @@ int	main(int ac, char **av)
 	philo = NULL;
 	info.print = malloc(sizeof(pthread_mutex_t));
 	pthread_mutex_init(info.print, NULL);
-	pthread_mutex_init(&info.died_m, NULL);
 	ft_create_node(&philo, &info);
 	ft_create_thread(philo, &info);
 	if (ft_died(philo, &info))
