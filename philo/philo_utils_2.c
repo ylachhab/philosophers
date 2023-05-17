@@ -6,11 +6,18 @@
 /*   By: ylachhab <ylachhab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/10 17:43:31 by ylachhab          #+#    #+#             */
-/*   Updated: 2023/05/10 19:15:18 by ylachhab         ###   ########.fr       */
+/*   Updated: 2023/05/12 16:46:09 by ylachhab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+void	ft_mutex_last(t_philo *philo)
+{
+	pthread_mutex_lock(&philo->last);
+	philo->last_eat = -1;
+	pthread_mutex_unlock(&philo->last);
+}
 
 int	ft_parcing(t_arg *info, char **av)
 {
@@ -69,13 +76,6 @@ int	ft_empty_arg(char *s)
 	return (1);
 }
 
-void	ft_mutex_usleep(t_philo *philo)
-{
-	pthread_mutex_lock(&philo->info->died_m);
-	philo->info->died = philo->i;
-	pthread_mutex_unlock(&philo->info->died_m);
-}
-
 void	ft_free(t_philo *philo, t_arg *info)
 {
 	int		i;
@@ -92,5 +92,4 @@ void	ft_free(t_philo *philo, t_arg *info)
 	}
 	pthread_mutex_destroy(info->print);
 	free(info->print);
-	pthread_mutex_destroy(&info->died_m);
 }

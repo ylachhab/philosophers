@@ -6,7 +6,7 @@
 /*   By: ylachhab <ylachhab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/14 12:26:31 by ylachhab          #+#    #+#             */
-/*   Updated: 2023/05/10 19:15:14 by ylachhab         ###   ########.fr       */
+/*   Updated: 2023/05/14 13:09:59 by ylachhab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,6 @@ int	ft_action(t_philo *philo)
 	current = ft_time();
 	if (ft_usleep(philo->info->time_eat, current, philo))
 	{
-		ft_mutex_usleep(philo);
 		return (1);
 	}
 	pthread_mutex_unlock(&philo->fork);
@@ -43,7 +42,7 @@ int	ft_action(t_philo *philo)
 	ft_mutex_printf(philo, "is sleeping");
 	current = ft_time();
 	if (ft_usleep(philo->info->time_sleep, current, philo))
-		return (ft_mutex_usleep(philo), 1);
+		return (1);
 	return (0);
 }
 
@@ -53,9 +52,10 @@ void	*ft_routine(void *arg)
 	int		nbr_of_eat;
 
 	philo = (t_philo *)arg;
+	pthread_mutex_lock(&philo->last);
 	philo->last_eat = 0;
+	pthread_mutex_unlock(&philo->last);
 	nbr_of_eat = 0;
-	philo->info->died = -1;
 	while (1)
 	{
 		if (philo->i % 2)
@@ -67,9 +67,7 @@ void	*ft_routine(void *arg)
 			nbr_of_eat++;
 		if (philo->info->must_eat == nbr_of_eat)
 		{
-			pthread_mutex_lock(&philo->last);
-			philo->last_eat = -1;
-			pthread_mutex_unlock(&philo->last);
+			ft_mutex_last(philo);
 			break ;
 		}
 	}
@@ -86,7 +84,8 @@ void	ft_create_thread(t_philo *philo, t_arg *info)
 	{
 		if (!info->ftime)
 			info->ftime = ft_time();
-		pthread_create(&philo->id, NULL, &ft_routine, philo);
+		if (pthread_create(&philo->id, NULL, &ft_routine, philo) != 0)
+			return ;
 		pthread_detach(philo->id);
 		philo = philo->next;
 		i++;
@@ -97,7 +96,6 @@ int	main(int ac, char **av)
 {
 	t_arg	info;
 	t_philo	*philo;
-	t_philo	*new;
 
 	if (ac != 5 && ac != 6)
 		return (printf("Error in the argement\n"), 0);
@@ -112,10 +110,9 @@ int	main(int ac, char **av)
 	philo = NULL;
 	info.print = malloc(sizeof(pthread_mutex_t));
 	pthread_mutex_init(info.print, NULL);
-	pthread_mutex_init(&info.died_m, NULL);
 	ft_create_node(&philo, &info);
 	ft_create_thread(philo, &info);
-	if (ft_died(philo, &info))
+	if (philo && ft_died(philo, &info))
 		return (0);
 	return (0);
 }
