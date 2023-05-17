@@ -6,7 +6,7 @@
 /*   By: ylachhab <ylachhab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/14 12:26:31 by ylachhab          #+#    #+#             */
-/*   Updated: 2023/05/17 19:48:50 by ylachhab         ###   ########.fr       */
+/*   Updated: 2023/05/17 20:07:47 by ylachhab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,6 @@ void	*ft_routine(void *arg)
 	int		nbr_of_eat;
 
 	philo = (t_philo *)arg;
-	// philo->last_eat = 0;
 	nbr_of_eat = 0;
 	while (1)
 	{
