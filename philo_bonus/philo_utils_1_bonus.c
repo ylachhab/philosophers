@@ -6,7 +6,7 @@
 /*   By: ylachhab <ylachhab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/06 14:34:42 by ylachhab          #+#    #+#             */
-/*   Updated: 2023/05/23 10:49:58 by ylachhab         ###   ########.fr       */
+/*   Updated: 2023/05/24 16:03:55 by ylachhab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,6 @@ void	ft_create_node(t_philo **philo, t_arg *info)
 	{
 		new = ft_listnew(info);
 		new->i = i;
-		new->last_eat = 0;
 		ft_listadd_back(philo, new);
 		i++;
 	}
